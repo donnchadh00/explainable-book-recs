@@ -5,6 +5,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 from app.db import engine, get_db, Base
 from app import models
+from app.api.books import router as books_router
 
 app = FastAPI(title="Book Recs API")
 
@@ -19,6 +20,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(books_router)
 
 @app.get("/")
 def root():
