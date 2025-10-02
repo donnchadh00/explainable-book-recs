@@ -9,3 +9,4 @@ class Book(Base):
     published_year = Column(Integer)
     isbn13 = Column(Text, unique=True)
     page_count = Column(Integer)
+    description = Column(Text, nullable=True)
