@@ -1,19 +1,26 @@
-from pathlib import Path
 import os
+from pathlib import Path
+from dotenv import load_dotenv
+from sqlalchemy import text, create_engine
 
-from sqlalchemy import create_engine, text
-
-SQL_PATH = Path(__file__).with_name("migrations") / "20250928_add_pgvector_embeddings.sql"
+load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
+assert DATABASE_URL, "DATABASE_URL not set"
 
-engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+MIGRATIONS_DIR = Path(__file__).with_name("migrations")
 
-sql_text = SQL_PATH.read_text()
+engine = create_engine(DATABASE_URL, future=True)
 
-with engine.begin() as conn:
-    # Enable extension + create table + index (idempotent)
-    for stmt in sql_text.split(";"):
-        s = stmt.strip()
-        if s:
-            conn.execute(text(s))
-print("Migration applied: pgvector + embeddings table")
+def run():
+    files = sorted(p for p in MIGRATIONS_DIR.glob("*.sql"))
+    if not files:
+        print("No migrations found.")
+        return
+    with engine.begin() as conn:
+        for f in files:
+            sql = f.read_text()
+            conn.execute(text(sql))
+            print(f"Applied {f.name}")
+
+if __name__ == "__main__":
+    run()
