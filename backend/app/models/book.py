@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, Integer, Text
+from sqlalchemy import Column, BigInteger, Integer, Text, Boolean
 from app.db import Base
 
 class Book(Base):
@@ -10,3 +10,5 @@ class Book(Base):
     isbn13 = Column(Text, unique=True)
     page_count = Column(Integer)
     description = Column(Text, nullable=True)
+    language_code = Column(Text, nullable=True)
+    is_fiction = Column(Boolean, nullable=True)
