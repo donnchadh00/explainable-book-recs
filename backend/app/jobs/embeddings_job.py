@@ -1,8 +1,10 @@
+from __future__ import annotations
 import os
-from ..db import SessionLocal
-from ..services.embeddings import Embedder, upsert_book_embeddings
 
-MODEL = os.getenv("EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
+from app.db import SessionLocal
+from app.services.embeddings import Embedder, upsert_book_embeddings
+
+MODEL = os.getenv("EMBED_MODEL", "BAAI/bge-small-en-v1.5")
 
 if __name__ == "__main__":
     embedder = Embedder(MODEL)
