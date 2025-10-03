@@ -42,3 +42,8 @@ Thumbs.db
 *.swp
 *.swo
 *.iml
+
+# ETL caches
+etl_cache/
+backend/etl/cache/
+backend/etl/cache_ol/
