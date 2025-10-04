@@ -27,8 +27,12 @@ export default function SemanticSearchPage() {
                 <ul className="divide-y border rounded">
                     {results.map((r) => (
                         <li key={r.id} className="p-3">
-                            <div className="font-medium">{r.title}{r.subtitle ? `: ${r.subtitle}` : ''}</div>
-                            <div className="text-sm opacity-70">Cosine ~ {r.cosine?.toFixed(3)}</div>
+                            <div className="font-medium">
+                            {r.title}{r.subtitle ? `: ${r.subtitle}` : ''}
+                            </div>
+                            <div className="text-sm opacity-70">
+                            {r.author ? `by ${r.author} · ` : ""}Cosine ~ {r.cosine?.toFixed(3)}
+                            </div>
                         </li>
                     ))}
                 </ul>
