@@ -7,6 +7,7 @@ from app.db import engine, get_db, Base
 from app import models
 from app.api.books import router as books_router
 from .api.semantic import router as semantic_router
+from .api.similar import router as similar_router
 
 app = FastAPI(title="Book Recs API")
 
@@ -24,6 +25,7 @@ app.add_middleware(
 
 app.include_router(books_router)
 app.include_router(semantic_router)
+app.include_router(similar_router)
 
 @app.get("/")
 def root():
