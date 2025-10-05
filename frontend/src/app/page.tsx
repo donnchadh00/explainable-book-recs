@@ -26,13 +26,11 @@ export default function Home() {
           </li>
         </ol>
 
-        <p className="mt-4">
-          <Link href="/recs" className="underline">Go to Recommendations</Link>
-        </p>
-
         <h1 className="text-2xl font-semibold mb-4">Recs Playground</h1>
         <ul className="list-disc ml-6">
           <li><Link href="/search" className="underline">Semantic Search</Link></li>
+          <li><Link href="/similar" className="underline">Similar Books</Link></li>
+          <li><Link href="/recs" className="underline">Go to Recommendations</Link></li>
         </ul>
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
