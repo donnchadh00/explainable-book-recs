@@ -9,7 +9,7 @@ router = APIRouter(prefix="/books", tags=["books"])
 @router.get("/{book_id}/similar")
 def similar_books(book_id: int, k: int = 20, db: Session = Depends(get_db)):
     sql = """
-      SELECT b2.id, b2.title, b2.published_year, b2.page_count,
+      SELECT b2.id, b2.title, b2.author, b2.published_year, b2.page_count,
              1 - (e2.vector <=> e1.vector) AS cosine
       FROM embeddings e1
       JOIN embeddings e2 ON e2.entity_type = 'book' AND e2.entity_id != e1.entity_id
