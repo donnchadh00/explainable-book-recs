@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import PageShell from "../components/PageShell"
 
 type BookHit = {
   id: number
@@ -103,79 +104,81 @@ export default function SimilarByTitlePage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6 space-y-6">
-      <h1 className="text-2xl font-semibold">Similar Books (by Title)</h1>
+    <PageShell>
+      <div className="max-w-3xl mx-auto p-6 space-y-6">
+        <h1 className="text-2xl font-semibold">Similar Books (by Title)</h1>
 
-      <form onSubmit={onSubmit} className="space-y-2">
-        <div className="relative">
-          <input
-            className="border rounded px-3 py-2 w-full"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Type a title, e.g. “To the Lighthouse”"
-            aria-label="Search book title"
-          />
-          {searching && (
-            <div className="absolute right-2 top-2 text-sm opacity-60">Searching…</div>
+        <form onSubmit={onSubmit} className="space-y-2">
+          <div className="relative">
+            <input
+              className="border rounded px-3 py-2 w-full"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Type a title, e.g. “To the Lighthouse”"
+              aria-label="Search book title"
+            />
+            {searching && (
+              <div className="absolute right-2 top-2 text-sm opacity-60">Searching…</div>
+            )}
+          </div>
+
+          {searchErr && <div className="text-sm text-red-600">{searchErr}</div>}
+
+          {hits.length > 0 && (
+            <ul className="border rounded divide-y">
+              {hits.map((h) => (
+                <li key={h.id} className="p-3 hover:bg-gray-50 cursor-pointer" onClick={() => onPick(h)}>
+                  <div className="font-medium">
+                    {h.title}{h.subtitle ? `: ${h.subtitle}` : ''}
+                  </div>
+                  <div className="text-sm opacity-70">
+                    {h.author ? `${h.author} · ` : ''}
+                    {h.published_year ?? ''}
+                  </div>
+                </li>
+              ))}
+            </ul>
           )}
-        </div>
 
-        {searchErr && <div className="text-sm text-red-600">{searchErr}</div>}
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              className="px-4 py-2 rounded bg-black text-white disabled:opacity-50"
+              disabled={searching || (hits.length === 0 && !selected)}
+              title="Press Enter to use the top suggestion"
+            >
+              Find Similar
+            </button>
+            {selected && (
+              <span className="text-sm opacity-70 self-center">
+                Selected: <strong>{selected.title}</strong>
+                {selected.author ? ` - ${selected.author}` : ''}
+              </span>
+            )}
+          </div>
+        </form>
 
-        {hits.length > 0 && (
-          <ul className="border rounded divide-y">
-            {hits.map((h) => (
-              <li key={h.id} className="p-3 hover:bg-gray-50 cursor-pointer" onClick={() => onPick(h)}>
+        {similarErr && <div className="text-sm text-red-600">{similarErr}</div>}
+
+        {loadingSimilar && <div>Loading similar titles…</div>}
+
+        {results && (
+          <ul className="divide-y border rounded">
+            {results.map((r) => (
+              <li key={r.id} className="p-3">
                 <div className="font-medium">
-                  {h.title}{h.subtitle ? `: ${h.subtitle}` : ''}
+                  {r.title}{r.subtitle ? `: ${r.subtitle}` : ''}
                 </div>
                 <div className="text-sm opacity-70">
-                  {h.author ? `${h.author} · ` : ''}
-                  {h.published_year ?? ''}
+                  {r.author ? `by ${r.author} · ` : ''}
+                  {r.published_year ? `${r.published_year} · ` : ''}
+                  Cosine ~ {typeof r.cosine === 'number' ? r.cosine.toFixed(3) : r.cosine}
                 </div>
               </li>
             ))}
           </ul>
         )}
-
-        <div className="flex gap-2">
-          <button
-            type="submit"
-            className="px-4 py-2 rounded bg-black text-white disabled:opacity-50"
-            disabled={searching || (hits.length === 0 && !selected)}
-            title="Press Enter to use the top suggestion"
-          >
-            Find Similar
-          </button>
-          {selected && (
-            <span className="text-sm opacity-70 self-center">
-              Selected: <strong>{selected.title}</strong>
-              {selected.author ? ` - ${selected.author}` : ''}
-            </span>
-          )}
-        </div>
-      </form>
-
-      {similarErr && <div className="text-sm text-red-600">{similarErr}</div>}
-
-      {loadingSimilar && <div>Loading similar titles…</div>}
-
-      {results && (
-        <ul className="divide-y border rounded">
-          {results.map((r) => (
-            <li key={r.id} className="p-3">
-              <div className="font-medium">
-                {r.title}{r.subtitle ? `: ${r.subtitle}` : ''}
-              </div>
-              <div className="text-sm opacity-70">
-                {r.author ? `by ${r.author} · ` : ''}
-                {r.published_year ? `${r.published_year} · ` : ''}
-                Cosine ~ {typeof r.cosine === 'number' ? r.cosine.toFixed(3) : r.cosine}
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+      </div>
+    </PageShell>
   )
 }

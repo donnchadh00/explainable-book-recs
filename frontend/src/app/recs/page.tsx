@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
+import PageShell from "../components/PageShell"
 
 type BookHit = {
   id: number
@@ -136,7 +137,7 @@ export default function RecsPage() {
   }
 
   return (
-    <main className="mx-auto max-w-3xl p-6 space-y-6">
+    <PageShell>
       <h1 className="text-2xl font-semibold">Recommendations</h1>
 
       {/* Inputs */}
@@ -262,6 +263,6 @@ export default function RecsPage() {
           ))}
         </ul>
       )}
-    </main>
+    </PageShell>
   )
 }

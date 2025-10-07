@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import PageShell from "../components/PageShell"
 
 export default function SemanticSearchPage() {
   const [q, setQ] = useState('')
@@ -35,51 +36,53 @@ export default function SemanticSearchPage() {
   ]
 
   return (
-    <div className="max-w-3xl mx-auto p-6 space-y-4">
-      <h1 className="text-2xl font-semibold">Semantic Search</h1>
+    <PageShell>
+        <div className="max-w-3xl mx-auto p-6 space-y-4">
+        <h1 className="text-2xl font-semibold">Semantic Search</h1>
 
-      <div className="mt-4 flex flex-wrap gap-2">
-        {recPresets.map(p => (
-          <Link
-            key={p.label}
-            href={`/search?q=${encodeURIComponent(p.q)}`}
-            className="rounded-full border px-3 py-1 text-xs hover:bg-black/5 dark:hover:bg-white/10 transition"
-          >
-            {p.label}
-          </Link>
-        ))}
-      </div>
+        <div className="mt-4 flex flex-wrap gap-2">
+            {recPresets.map(p => (
+            <Link
+                key={p.label}
+                href={`/search?q=${encodeURIComponent(p.q)}`}
+                className="rounded-full border px-3 py-1 text-xs hover:bg-black/5 dark:hover:bg-white/10 transition"
+            >
+                {p.label}
+            </Link>
+            ))}
+        </div>
 
-      <div className="flex gap-2">
-        <input
-          className="border rounded px-3 py-2 w-full"
-          value={q}
-          onChange={e => setQ(e.target.value)}
-          placeholder='e.g. "Victorian social novel", "dystopian novels"'
-        />
-        <button
-          onClick={() => run()}
-          className="px-4 py-2 rounded bg-black text-white disabled:opacity-50"
-          disabled={!q || loading}
-        >
-          {loading ? 'Searching…' : 'Search'}
-        </button>
-      </div>
+        <div className="flex gap-2">
+            <input
+            className="border rounded px-3 py-2 w-full"
+            value={q}
+            onChange={e => setQ(e.target.value)}
+            placeholder='e.g. "Victorian social novel", "dystopian novels"'
+            />
+            <button
+            onClick={() => run()}
+            className="px-4 py-2 rounded bg-black text-white disabled:opacity-50"
+            disabled={!q || loading}
+            >
+            {loading ? 'Searching…' : 'Search'}
+            </button>
+        </div>
 
-      {results && (
-        <ul className="divide-y border rounded">
-          {results.map((r) => (
-            <li key={r.id} className="p-3">
-              <div className="font-medium">
-                {r.title}{r.subtitle ? `: ${r.subtitle}` : ''}
-              </div>
-              <div className="text-sm opacity-70">
-                {r.author ? `by ${r.author} · ` : ""}Cosine ~ {r.cosine?.toFixed(3)}
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+        {results && (
+            <ul className="divide-y border rounded">
+            {results.map((r) => (
+                <li key={r.id} className="p-3">
+                <div className="font-medium">
+                    {r.title}{r.subtitle ? `: ${r.subtitle}` : ''}
+                </div>
+                <div className="text-sm opacity-70">
+                    {r.author ? `by ${r.author} · ` : ""}Cosine ~ {r.cosine?.toFixed(3)}
+                </div>
+                </li>
+            ))}
+            </ul>
+        )}
+        </div>
+    </PageShell>
   )
 }
