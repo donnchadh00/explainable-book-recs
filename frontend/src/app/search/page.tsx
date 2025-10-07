@@ -20,7 +20,7 @@ export default function SemanticSearchPage() {
         <div className="max-w-3xl mx-auto p-6 space-y-4">
             <h1 className="text-2xl font-semibold">Semantic Search</h1>
             <div className="flex gap-2">
-                <input className="border rounded px-3 py-2 w-full" value={q} onChange={e=>setQ(e.target.value)} placeholder="Try 'western horror'"/>
+                <input className="border rounded px-3 py-2 w-full" value={q} onChange={e=>setQ(e.target.value)} placeholder='e.g. "Victorian social novel", "dystopian novels"'/>
                 <button onClick={run} className="px-4 py-2 rounded bg-black text-white disabled:opacity-50" disabled={!q || loading}>{loading? 'Searching…' : 'Search'}</button>
             </div>
             {results && (
