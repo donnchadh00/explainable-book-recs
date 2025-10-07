@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 type BookHit = {
   id: number
@@ -24,6 +25,8 @@ type Rec = {
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
 export default function RecsPage() {
+  const searchParams = useSearchParams()
+
   // Free-text semantic query
   const [q, setQ] = useState('')
 
@@ -42,6 +45,12 @@ export default function RecsPage() {
   // infra
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const abortSearchRef = useRef<AbortController | null>(null)
+
+  useEffect(() => {
+      const qp = searchParams.get('q')
+      const seedId = searchParams.get('seed_book_id')
+      if (qp && !q) setQ(qp)
+    }, [searchParams])
 
   // live search titles/authors
   useEffect(() => {
@@ -78,7 +87,7 @@ export default function RecsPage() {
 
   function pick(hit: BookHit) {
     setSelected(hit)
-    setQuery(`${hit.title}${hit.author ? ` — ${hit.author}` : ''}`)
+    setQuery(`${hit.title}${hit.author ? ` - ${hit.author}` : ''}`)
     setHits([])
   }
 
@@ -183,7 +192,7 @@ export default function RecsPage() {
             <div className="flex items-center gap-2 text-sm">
               <span className="opacity-80">Selected:</span>
               <span className="font-medium">
-                {selected.title}{selected.author ? ` — ${selected.author}` : ''}
+                {selected.title}{selected.author ? ` - ${selected.author}` : ''}
               </span>
               <button onClick={clearSeed} className="ml-2 rounded border px-2 py-0.5 hover:bg-black/5 dark:hover:bg-white/10">
                 Change
