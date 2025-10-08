@@ -1,26 +1,122 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  /* Core neutrals (light mode) */
+  --bg-cream:    244 241 234;   /* #F4F1EA parchment */
+  --ink-brown:   56  33  16;    /* #382110 main text / brand */
+  --muted-brown: 107 91  77;    /* #6B5B4D muted text */
+  --border-warm: 230 224 213;   /* #E6E0D5 borders/cards */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Accents */
+  --accent:       56  33  16;   /* #382110 coffee-brown (links/buttons) */
+  --accent-hover: 89  60  34;   /* #593C22 hover */
+  --accent-soft:  212 196 175;  /* #D4C4AF soft fills */
+
+  /* Secondary (shelf green) */
+  --accent-2:       64 157 105;  /* #409D69 */
+  --accent-2-hover: 42 123 95;   /* #2A7B5F */
+
+  /* Expose tokens used throughout */
+  --background: var(--bg-cream);
+  --foreground: var(--ink-brown);
+  --muted:      var(--muted-brown);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Dark mode (warm, not bluish) */
+    --bg-deep:     28 23 17;     /* ~#1C1711 */
+    --ink-warm:   237 231 223;   /* ~#EDE7DF */
+    --muted-brown: 182 170 158;  /* softer muted */
+
+    --background: var(--bg-deep);
+    --foreground: var(--ink-warm);
+
+    /* Accents lighten a bit in dark */
+    --accent:       224 201 166;  /* ~#E0C9A6 */
+    --accent-hover: 247 225 193;  /* ~#F7E1C1 */
+    --accent-soft:  70  56  42;   /* soft warm panel */
+
+    --accent-2:       140 194 166; /* softer green */
+    --accent-2-hover: 168 214 187;
+    --border-warm:    63  54  45;  /* warm border */
   }
 }
 
+@theme inline {
+  --color-background: rgb(var(--background));
+  --color-foreground: rgb(var(--foreground));
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html, body { height: 100%; }
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
+  font-family: var(--font-sans, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", sans-serif);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Links / buttons transitions */
+a, button, .link {
+  transition: color .2s, background-color .2s, border-color .2s, box-shadow .2s, opacity .2s, transform .2s;
+}
+
+/* Accent helpers */
+.text-accent        { color: rgb(var(--accent)); }
+.bg-accent          { background-color: rgb(var(--accent)); }
+.bg-accent-2        { background-color: rgb(var(--accent-2)); }
+.border-warm        { border-color: rgb(var(--border-warm)); }
+.text-muted         { color: rgb(var(--muted)); }
+
+/* Buttons */
+.btn-primary {
+  background-color: rgb(var(--accent));
+  color: white;
+}
+.btn-primary:hover {
+  background-color: rgb(var(--accent-hover));
+}
+.btn-outline {
+  border: 1px solid rgb(var(--accent));
+  color: rgb(var(--accent));
+  background-color: transparent;
+}
+.btn-outline:hover {
+  background-color: rgba(var(--accent), 0.06);
+}
+
+/* Inputs */
+input, textarea, select {
+  background-color: rgba(255,255,255,0.7);
+  color: inherit;
+}
+@media (prefers-color-scheme: dark) {
+  input, textarea, select { background-color: rgba(0,0,0,0.2); }
+}
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--accent), 0.35);
+  border-color: rgb(var(--accent));
+}
+
+/* Panels / cards */
+.surface {
+  background-color: rgb(var(--background));
+}
+.surface-tinted {
+  background-color: color-mix(in oklab, rgb(var(--background)) 92%, rgb(var(--accent-soft)) 8%);
+}
+.card {
+  background-color: rgba(255,255,255,0.7);
+  border: 1px solid rgb(var(--border-warm));
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+@media (prefers-color-scheme: dark) {
+  .card { background-color: rgba(0,0,0,0.2); }
 }
