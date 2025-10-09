@@ -13,13 +13,16 @@ function Card({
   return (
     <Link
       href={href}
-      className="group block rounded-2xl border border-black/10 dark:border-white/10 p-5 hover:shadow-md transition-shadow focus:outline-none focus:ring-2 focus:ring-black/30 dark:focus:ring-white/30"
-    >
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">{title}</h3>
-        <span aria-hidden className="translate-x-0 group-hover:translate-x-0.5 transition-transform">→</span>
+      className="group block rounded-2xl border border-[rgb(var(--border-warm))] 
+                p-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 card"
+      >
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="text-lg font-semibold group-hover:text-[rgb(var(--accent))] transition-colors">
+          {title}
+        </h3>
+        <span aria-hidden className="translate-x-0 group-hover:translate-x-0.5 text-[rgb(var(--accent))] transition-transform">→</span>
       </div>
-      <p className="mt-1 text-sm text-black/60 dark:text-white/60">{desc}</p>
+      <p className="mt-1 text-sm text-muted">{desc}</p>
     </Link>
   );
 }
@@ -63,16 +66,26 @@ export default function Home() {
         </div>
 
         {/* Quick presets linking into /recs via query param */}
-        <div className="mt-4 flex flex-wrap gap-2">
-          {recPresets.map(p => (
-            <Link
-              key={p.label}
-              href={`/recs?q=${encodeURIComponent(p.q)}`}
-              className="rounded-full border px-3 py-1 text-xs hover:bg-black/5 dark:hover:bg-white/10 transition"
-            >
-              {p.label}
-            </Link>
-          ))}
+        <div className="mt-8">
+          <h2 className="text-base font-semibold text-[rgb(var(--accent))] mb-1">
+            Explore popular themes
+          </h2>
+          <p className="text-sm text-muted mb-3">
+            Jump right in with one of these preset searches:
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {recPresets.map(p => (
+              <Link
+                key={p.label}
+                href={`/recs?q=${encodeURIComponent(p.q)}`}
+                className="rounded-full border border-[rgb(var(--accent))]/40 text-[rgb(var(--accent))]
+                          px-3 py-1.5 text-xs font-medium bg-[rgb(var(--accent-soft))]/40
+                          hover:bg-[rgb(var(--accent-soft))]/70 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm"
+              >
+                {p.label}
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
