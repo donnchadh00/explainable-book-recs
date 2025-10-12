@@ -10,7 +10,7 @@ export type BookListItem = {
 }
 
 type Props<T extends BookListItem> = {
-  items: (T & Record<string, any>)[] | null
+  items: T[] | null
   loading?: boolean
   error?: string | null
   emptyMessage?: string
@@ -60,11 +60,13 @@ export default function BookList<T extends BookListItem>({
   }
 
   return (
-    <ul className={
-      variant === 'compact'
-        ? 'rounded-xl border border-[rgb(var(--border-warm))] divide-y bg-white/70 dark:bg-black/20 overflow-hidden'
-        : 'grid grid-cols-1 gap-2'
-    }>
+    <ul
+      className={
+        variant === 'compact'
+          ? 'rounded-xl border border-[rgb(var(--border-warm))] divide-y bg-white/70 dark:bg:black/20 overflow-hidden'
+          : 'grid grid-cols-1 gap-2'
+      }
+    >
       {items.map((r) => {
         const metricVal = metricAccessor ? metricAccessor(r) : undefined
         return (
@@ -76,7 +78,7 @@ export default function BookList<T extends BookListItem>({
             tabIndex={onItemClick ? 0 : undefined}
             onKeyDown={
               onItemClick
-                ? (e) => {
+                ? (e: React.KeyboardEvent<HTMLLIElement>) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault()
                       onItemClick(r)
@@ -112,11 +114,7 @@ export default function BookList<T extends BookListItem>({
                 </div>
               </div>
 
-              {renderFooter && (
-                <div className="mt-2 text-sm">
-                  {renderFooter(r)}
-                </div>
-              )}
+              {renderFooter && <div className="mt-2 text-sm">{renderFooter(r)}</div>}
             </div>
           </li>
         )
