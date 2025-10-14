@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import PageShell from '../components/PageShell'
@@ -31,14 +31,14 @@ export default function SearchClient() {
   const searchParams = useSearchParams()
   const qp = useMemo(() => searchParams.get('q') ?? '', [searchParams])
 
-  const run = useCallback(async (query?: string) => {
-    const queryToUse = (query ?? q).trim()
+  const run = useCallback(async (query: string) => {
+    const queryToUse = query.trim()
     if (!queryToUse) return
     setLoading(true)
     setError(null)
     setResults(null)
     try {
-      const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+      const base = process.env.NEXT_PUBLIC_API_URL || '/api'
       const url = `${base}/search/semantic?q=${encodeURIComponent(queryToUse)}`
       const res = await fetch(url)
       if (!res.ok) throw new Error(`Search error: ${res.statusText}`)
@@ -49,14 +49,23 @@ export default function SearchClient() {
     } finally {
       setLoading(false)
     }
-  }, [q])
+  }, [])
 
+  const mounted = useRef(false)
   useEffect(() => {
     setQ(qp)
-    setResults(null)
-    setError(null)
+
+    if (!mounted.current) {
+      mounted.current = true
+      return
+    }
+
     if (qp) void run(qp)
-  }, [qp, run])
+    else {
+      setResults(null)
+      setError(null)
+    }
+  }, [qp])
 
   const recPresets = [
     { label: 'Coming-of-age novels', q: 'coming-of-age novel with moral growth and hardship' },
@@ -69,7 +78,9 @@ export default function SearchClient() {
       <div className="max-w-3xl mx-auto p-6 space-y-4">
         <h1 className="text-2xl font-semibold">Semantic Search</h1>
 
-        <p className="text-sm text-muted mb-3">Click a preset to see how semantic search works:</p>
+        <p className="text-sm text-muted mb-3">
+          Click a preset to see how semantic search works:
+        </p>
         <div className="mt-4 flex flex-wrap gap-2">
           {recPresets.map((p) => (
             <Link
@@ -91,7 +102,7 @@ export default function SearchClient() {
             onChange={(e) => setQ(e.target.value)}
             placeholder='e.g. "Victorian social novel", "dystopian novels"'
           />
-          <Button size="lg" onClick={() => void run()} disabled={!q || loading}>
+          <Button size="lg" onClick={() => void run(q)} disabled={!q || loading}>
             {loading ? 'Searching…' : 'Search'}
           </Button>
         </div>
