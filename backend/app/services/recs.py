@@ -15,6 +15,9 @@ from app.services.cf import (
     similar_books_by_ratings,
     fetch_books_by_ids,
 )
+from dotenv import load_dotenv
+
+load_dotenv()
 
 EMBED_DIM = int(os.getenv("EMBED_DIM", "384"))
 

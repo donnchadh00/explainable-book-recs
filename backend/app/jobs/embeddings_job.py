@@ -3,6 +3,9 @@ import os
 
 from app.db import SessionLocal
 from app.services.embeddings import Embedder, upsert_book_embeddings
+from dotenv import load_dotenv
+
+load_dotenv()
 
 MODEL = os.getenv("EMBED_MODEL", "BAAI/bge-small-en-v1.5")
 

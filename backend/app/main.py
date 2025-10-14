@@ -9,6 +9,9 @@ from app.api.books import router as books_router
 from .api.semantic import router as semantic_router
 from .api.similar import router as similar_router
 from .api.recommend import router as recommend_router
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI(title="Book Recs API")
 

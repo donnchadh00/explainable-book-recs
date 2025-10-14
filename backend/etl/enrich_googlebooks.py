@@ -2,6 +2,9 @@ import os
 from typing import Optional, List, Tuple
 import httpx
 from tenacity import retry, wait_exponential, stop_after_attempt
+from dotenv import load_dotenv
+
+load_dotenv()
 
 GB = "https://www.googleapis.com/books/v1/volumes"
 

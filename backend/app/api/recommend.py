@@ -12,6 +12,9 @@ from app.models.book import Book
 from app.services.embeddings import Embedder
 from app.services.recs import hybrid_recommendations
 from app.services.explain import explain_similarity
+from dotenv import load_dotenv
+
+load_dotenv()
 
 router = APIRouter(prefix="/recommend", tags=["recommend"])
 

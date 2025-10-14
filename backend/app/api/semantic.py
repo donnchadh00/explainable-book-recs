@@ -7,6 +7,9 @@ from pgvector.sqlalchemy import Vector
 
 from ..db import get_db
 from ..services.embeddings import Embedder
+from dotenv import load_dotenv
+
+load_dotenv()
 
 router = APIRouter(prefix="/search", tags=["search"])
 
