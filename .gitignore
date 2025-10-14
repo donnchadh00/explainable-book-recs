@@ -47,3 +47,7 @@ Thumbs.db
 etl_cache/
 backend/etl/cache/
 backend/etl/cache_ol/
+
+# Project Logs
+backend/backend.log
+frontend/frontend.log
