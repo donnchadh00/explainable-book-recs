@@ -12,9 +12,6 @@ from .api.recommend import router as recommend_router
 
 app = FastAPI(title="Book Recs API")
 
-# Create tables at startup (simple MVP; later use Alembic)
-Base.metadata.create_all(bind=engine)
-
 FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")
 app.add_middleware(
     CORSMiddleware,
@@ -41,3 +38,7 @@ def health():
 def db_ping(db: Session = Depends(get_db)):
     version = db.execute(text("select version()")).scalar()
     return {"db": "ok", "version": version}
+
+@app.on_event("startup")
+def on_startup():
+    Base.metadata.create_all(bind=engine)
