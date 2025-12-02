@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+.env
+.dist/
+build/
+dist/
+.cache/
+tests/
+etl_cache/
+node_modules/
