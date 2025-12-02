@@ -1,0 +1,17 @@
+FROM python:3.11-bookworm
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential curl git && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
+ && pip install --no-cache-dir "poetry>=2.0,<3.0"
+
+WORKDIR /app
+
+COPY ./backend/pyproject.toml ./backend/poetry.lock ./
+RUN poetry config virtualenvs.create false \
+ && poetry install --no-interaction --no-ansi --only main --no-root
+
+COPY ./backend /app
+EXPOSE 8000
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips", "*"]
