@@ -7,33 +7,40 @@ authors = [
 ]
 readme = "README.md"
 requires-python = ">=3.10"
+
 dependencies = [
-    "fastapi (>=0.117.1,<0.118.0)",
-    "uvicorn[standard] (>=0.37.0,<0.38.0)",
-    "psycopg2-binary (>=2.9.10,<3.0.0)",
-    "sqlalchemy (>=2.0.43,<3.0.0)",
-    "sqlmodel (>=0.0.25,<0.0.26)",
-    "pandas (>=2.3.2,<3.0.0)",
-    "polars (>=1.33.1,<2.0.0)",
-    "sentence-transformers (>=5.1.1,<6.0.0)",
-    "scikit-learn (>=1.7.2,<2.0.0)",
-    "implicit (>=0.7.2,<0.8.0)",
-    "pydantic (>=2.11.9,<3.0.0)",
-    "pgvector (>=0.4.1,<0.5.0)",
-    "psycopg (>=3.2.10,<4.0.0)",
-    "python-dotenv (>=1.1.1,<2.0.0)",
-    "httpx[http2] (>=0.28.1,<0.29.0)",
-    "tenacity (>=9.1.2,<10.0.0)"
+  # API/runtime
+  "fastapi >=0.117.1,<0.118.0",
+  "uvicorn[standard] >=0.37.0,<0.38.0",
+  "sqlalchemy >=2.0.43,<3.0.0",
+  "sqlmodel >=0.0.25,<0.0.26",
+  "pydantic >=2.11.9,<3.0.0",
+  "pgvector >=0.4.1,<0.5.0",
+  # DB driver (psycopg3). Use ONE driver; drop psycopg2-binary.
+  "psycopg[binary] >=3.2.10,<4.0.0",
+  # misc
+  "python-dotenv >=1.1.1,<2.0.0",
+  "httpx[http2] >=0.28.1,<0.29.0",
+  "tenacity >=9.1.2,<10.0.0",
+  # lightweight embeddings for prod
+  "fastembed >=0.3.4"  # keep queries light on Fly
 ]
 
+[dependency-groups]
+# dev tools only
+dev = [
+  "black >=25.9.0,<26.0.0",
+  "ruff >=0.13.2,<0.14.0",
+  "pytest >=8.4.2,<9.0.0"
+]
+
+# heavy ML stack for local use (not installed in prod)
+embed-heavy = [
+  "sentence-transformers >=5.1.1,<6.0.0",
+  "scikit-learn >=1.7.2,<2.0.0",
+  "implicit >=0.7.2,<0.8.0"
+]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[dependency-groups]
-dev = [
-    "black (>=25.9.0,<26.0.0)",
-    "ruff (>=0.13.2,<0.14.0)",
-    "pytest (>=8.4.2,<9.0.0)"
-]
