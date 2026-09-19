@@ -12,7 +12,7 @@ The recommender combines **semantic embeddings** of novels (from Wikipedia summa
 
 **Frontend:** Next.js + TailwindCSS  
 **Backend:** FastAPI + SQLAlchemy + pgvector  
-**Embeddings:** SentenceTransformer (`all-MiniLM-L6-v2`)  
+**Embeddings:** SentenceTransformer (`BAAI/bge-small-en-v1.5` by default, configurable via `EMBED_MODEL`)  
 **Database:** PostgreSQL with `pgvector` extension
 
 The system supports three primary modes of interaction:
@@ -91,7 +91,8 @@ When both a description (“Spanish Civil War”) and a seed book (*The Grapes o
 
 Make sure the following tools are installed:
 
-- [**Poetry**](https://python-poetry.org/docs/#installation) ≥ 1.7  
+- [**Poetry**](https://python-poetry.org/docs/#installation) ≥ 2.0  
+- [**Python**](https://www.python.org/downloads/) 3.11 (step 1 installs it with Poetry if you don't have it)
 - [**Docker**](https://docs.docker.com/get-docker/) ≥ 24.0  
 - [**Node.js**](https://nodejs.org/en/download) ≥ 18.0
 
@@ -101,48 +102,65 @@ Make sure the following tools are installed:
 
 ```bash
 git clone https://github.com/donnchadh00/explainable-book-recs.git
-cd bookrecs
+cd explainable-book-recs
+
+# backend
+cd backend
+poetry python install 3.11
+poetry env use 3.11
 poetry install
+
+# frontend
+cd ../frontend
+npm install
+
+cd ..
 ```
 
 ### 2. Set up environment variables
 
-Create `.env` for the backend and `.env.local` for the frontend:
+Create a `.env` file in both `backend/` and `frontend/`:
 
 ```bash
+# from project root
 cd backend
 cp .env.example .env
 
 cd ../frontend
-cp .env.local.example .env.local
+cp .env.example .env
+cd ..
 ```
 
 ### 3. Start PostgreSQL (with pgvector)
 
 ```bash
 # from project root
-docker compose up -d db --build
+docker compose up -d db
 ```
 
 ### 4. Apply database migrations
 
 ```bash
-# from backend/
-poetry run python -m app.migrations.apply
+cd backend
+poetry run python -m app.migrate
 ```
 
 ### 5. Ingest OpenLibrary data (choose subjects)
 
 ```bash
 # from backend/
-poetry run python -m etl.openlibrary_ingest   --subject classic_literature --subject world_classics --subject literature   --max-per-source 2000 --editions-limit 30 --concurrency 32 --batch-commit 250   --cache-dir etl_cache
+poetry run python -m etl.openlibrary_ingest \
+  --subject classic_literature --subject world_classics --subject literature \
+  --max-per-source 2000 --editions-limit 30 --concurrency 32 --batch-commit 250 \
+  --cache-dir etl_cache
 ```
 
-You can customize subjects or limits for a smaller dataset.
+> **Note:** this step makes many requests to the Open Library API and can take a while. For a quick trial run, use a smaller `--max-per-source` (e.g. `100`). You can also customize the subjects. Results are cached in `etl_cache/`, so re-running is faster.
 
 ### 6. Enrich data with Wikipedia summaries
 
 ```bash
+# from backend/
 poetry run python -m etl.enrich_wikipedia --min-chars 999999 --concurrency 24
 ```
 
@@ -164,7 +182,6 @@ poetry run uvicorn app.main:app --reload --port 8000
 
 # Terminal B - frontend
 cd frontend
-npm install
 npm run dev
 ```
 
@@ -179,5 +196,5 @@ FastAPI docs are available at **http://localhost:8000/docs**.
 |-----------|--------------|
 | `GET /books/search?q=...` | Search by title or author substring |
 | `GET /books/{id}/similar` | Find similar books using vector similarity |
-| `GET /semantic?q=...` | Semantic search via free-text query |
+| `GET /search/semantic?q=...` | Semantic search via free-text query |
 | `GET /recommend?seed_book_id=...&q=...` | Hybrid recommendations (vector fusion) |
