@@ -24,10 +24,10 @@ fi
 
 cd ../frontend
 
-if [ -f .env.local ]; then
-  export $(grep -v '^#' .env.local | xargs)
+if [ -f .env ]; then
+  export $(grep -v '^#' .env | xargs)
 else
-  echo "Warning: frontend/.env.local not found."
+  echo "Warning: frontend/.env not found."
 fi
 
 if pgrep -f "npm run dev" > /dev/null; then
