@@ -190,6 +190,42 @@ FastAPI docs are available at **http://localhost:8000/docs**.
 
 ---
 
+## Running with Docker
+
+Run the database, backend and frontend all in containers. This only needs [**Docker**](https://docs.docker.com/get-docker/) ≥ 24.0 - no Poetry, Python or Node.js.
+
+### 1. Clone the repository and start the stack
+
+```bash
+git clone https://github.com/donnchadh00/explainable-book-recs.git
+cd explainable-book-recs
+docker compose up -d --build
+```
+
+This builds the images and starts PostgreSQL, the API and the frontend. Database migrations are applied automatically when the API container starts.
+
+### 2. Load the data
+
+Run the data steps inside the `api` container (same commands as steps 5-7 above, without `poetry run`):
+
+```bash
+docker compose exec api python -m etl.openlibrary_ingest \
+  --subject classic_literature --subject world_classics --subject literature \
+  --max-per-source 2000 --editions-limit 30 --concurrency 32 --batch-commit 250 \
+  --cache-dir etl_cache
+
+docker compose exec api python -m etl.enrich_wikipedia --min-chars 999999 --concurrency 24
+
+docker compose exec api python -m app.jobs.embeddings_job
+```
+
+### 3. Open the app
+
+Visit **http://localhost:3000**.  
+FastAPI docs are available at **http://localhost:8000/docs**.
+
+---
+
 ## Key API Routes
 
 | Endpoint | Description |
